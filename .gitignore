@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/deployment.scaler/.vs
+/deployment.scaler/deploy.keda.scaler/bin/Debug/net8.0
+/deployment.scaler/deploy.keda.scaler/obj
+/deployment.scaler/deploy.keda.scaler/deploy.keda.scaler.csproj.user
