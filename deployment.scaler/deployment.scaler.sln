@@ -7,10 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "deploy.keda.scaler", "deplo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9CAE2316-F5D1-465A-A61A-FA31B71E12BA}"
 	ProjectSection(SolutionItems) = preProject
+		cp-Dockerfile = cp-Dockerfile
 		scaler-Dockerfile = scaler-Dockerfile
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "scaler.control.plain", "scaler.control.plain\scaler.control.plain.csproj", "{C9526A03-E463-4CA0-9BDF-E3DF428F37EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "scaler.control.plain", "scaler.control.plain\scaler.control.plain.csproj", "{C9526A03-E463-4CA0-9BDF-E3DF428F37EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
