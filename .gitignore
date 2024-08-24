@@ -7,3 +7,5 @@
 /deployment.scaler/deploy.keda.scaler/bin/Debug/net8.0
 /deployment.scaler/deploy.keda.scaler/obj
 /deployment.scaler/deploy.keda.scaler/deploy.keda.scaler.csproj.user
+/deployment.scaler/scaler.control.plain/obj
+/deployment.scaler/scaler.control.plain/scaler.control.plain.csproj.user
