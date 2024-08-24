@@ -2,6 +2,7 @@
 kind: Deployment
 metadata:
   name: keda-scaler
+  namespace: keda-sample
 spec:
   replicas: 1
   selector:
@@ -24,6 +25,11 @@ spec:
               fieldPath: metadata.namespace
         - name: GrpcPort
           value: "60051"
+        - name: MongoDB__connectionString
+          valueFrom:
+            secretKeyRef:
+              name: mongo-db-secrets
+              key: connectionString
 ---
 apiVersion: v1
 kind: Service
@@ -36,4 +42,4 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 60051
-    type: ClusterIP
+  type: ClusterIP
