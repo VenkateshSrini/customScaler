@@ -10,3 +10,6 @@
 /deployment.scaler/scaler.control.plain/obj
 /deployment.scaler/scaler.control.plain/scaler.control.plain.csproj.user
 /deployment.scaler/scaler.control.plain/bin/Debug/net8.0
+/deployment.scaler/test-scaled-object/bin/Debug/net8.0
+/deployment.scaler/test-scaled-object/obj
+*.user

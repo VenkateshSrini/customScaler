@@ -1,0 +1,64 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-scaled-object-deployment
+  namespace: keda-sample
+  labels:
+    app: test-scaled-object
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-scaled-object
+  template:
+    metadata:
+      labels:
+        app: test-scaled-object
+    spec:
+      containers:
+      - name: test-scaled-object
+        image: venkateshsrini3/test-deploy:1.0 # Replace with your Docker image
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: podName
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-scaled-object-service
+  namespace: keda-sample
+  labels:
+    app: test-scaled-object
+spec:
+  type: LoadBalancer
+  selector:
+    app: test-scaled-object
+  ports:
+  - protocol: TCP
+    port: 3008
+    targetPort: 8080
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: test-scaled-object
+  namespace: keda-sample
+spec:
+  scaleTargetRef:
+    name: test-scaled-object-deployment # The deployment you want to scale
+  minReplicaCount: 0
+  maxReplicaCount: 10
+  cooldownPeriod: 30
+  pollingInterval: 30
+  triggers:
+  - type: external
+    metadata:
+      scalerAddress: keda-scaler.keda-sample.svc.cluster.local:80
+      maxReplicaCount: "10"
+      minReplicaCount: "0"
