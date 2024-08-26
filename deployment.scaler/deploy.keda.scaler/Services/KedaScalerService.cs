@@ -39,33 +39,49 @@ namespace deploy.keda.scaler.Services
         public async override Task<GetMetricsResponse> GetMetrics(GetMetricsRequest request, ServerCallContext context)
         {
             var deploymentInfo = await _repo.GetDeploymentScaleInfoAsync(request.ScaledObjectRef.Namespace, request.ScaledObjectRef.Name);
+            MetricValue isActiveMetricValue;
+            MetricValue desiredSizeMetricValue;
             if (deploymentInfo == null)
             {
-                throw new InvalidOperationException($"Deployment {request.ScaledObjectRef.Name} not found in namespace {request.ScaledObjectRef.Namespace}");
-            }
-            var isActiveMetricValue = new MetricValue
-            {
-                MetricName = "is_scaling_active",
-                MetricValue_ = deploymentInfo?.IsScalingActive == true ? 1 : 0
-            };
-            int? maxScale;
-            if (deploymentInfo.IsScalingActive)
-            {
-                var defMaxScale = int.Parse(request.ScaledObjectRef.ScalerMetadata["maxReplicaCount"]);
-                maxScale = deploymentInfo?.MaxScale >= defMaxScale ? defMaxScale : deploymentInfo?.MaxScale;
+                _logger.LogCritical($"Deployment {request.ScaledObjectRef.Name} not found in namespace {request.ScaledObjectRef.Namespace}");
+                isActiveMetricValue = new MetricValue
+                {
+                    MetricName = "is_scaling_active",
+                    MetricValue_ = 0
+                };
+                var defMinScale = int.Parse(request.ScaledObjectRef.ScalerMetadata["minReplicaCount"]);
+                desiredSizeMetricValue = new MetricValue
+                {
+                    MetricName = "desired_instance_count",
+                    MetricValue_ = defMinScale
+                };
+
             }
             else
             {
-                var defMinScale = int.Parse(request.ScaledObjectRef.ScalerMetadata["maxReplicaCount"]);
-                maxScale = deploymentInfo?.MinScale >= defMinScale ?  deploymentInfo?.MinScale:defMinScale;
-            }
-            
-            var desiredSizeMetricValue = new MetricValue
-            {
-                MetricName = "desired_instance_count",
-                MetricValue_ = maxScale.Value
-            };
+                isActiveMetricValue = new MetricValue
+                {
+                    MetricName = "is_scaling_active",
+                    MetricValue_ = deploymentInfo?.IsScalingActive == true ? 1 : 0
+                };
+                int? maxScale;
+                if (deploymentInfo.IsScalingActive)
+                {
+                    var defMaxScale = int.Parse(request.ScaledObjectRef.ScalerMetadata["maxReplicaCount"]);
+                    maxScale = deploymentInfo?.MaxScale >= defMaxScale ? defMaxScale : deploymentInfo?.MaxScale;
+                }
+                else
+                {
+                    var defMinScale = int.Parse(request.ScaledObjectRef.ScalerMetadata["minReplicaCount"]);
+                    maxScale = deploymentInfo?.MinScale >= defMinScale ? deploymentInfo?.MinScale : defMinScale;
+                }
 
+                 desiredSizeMetricValue = new MetricValue
+                {
+                    MetricName = "desired_instance_count",
+                    MetricValue_ = maxScale.Value
+                };
+            }
             var response = new GetMetricsResponse();
             response.MetricValues.Add(isActiveMetricValue);
             response.MetricValues.Add(desiredSizeMetricValue);
