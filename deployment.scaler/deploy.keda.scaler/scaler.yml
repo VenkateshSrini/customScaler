@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: keda-scaler
-        image: venkateshsrini3/deploy-scaler:1.3
+        image: venkateshsrini3/deploy-scaler:1.5
         ports:
         - containerPort: 60051
         env:

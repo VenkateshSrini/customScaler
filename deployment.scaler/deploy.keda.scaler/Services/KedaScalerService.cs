@@ -43,7 +43,7 @@ namespace deploy.keda.scaler.Services
             MetricValue desiredSizeMetricValue;
             if (deploymentInfo == null)
             {
-                _logger.LogCritical($"Deployment {request.ScaledObjectRef.Name} not found in namespace {request.ScaledObjectRef.Namespace}");
+                _logger.LogCritical($"Deployment {request.ScaledObjectRef.Name} with namespace {request.ScaledObjectRef.Namespace} not foud in DB");
                 isActiveMetricValue = new MetricValue
                 {
                     MetricName = "is_scaling_active",

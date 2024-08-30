@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: scaler-control-plain
-        image: venkateshsrini3/control-plane:1.0 # Replace with your Docker image
+        image: venkateshsrini3/control-plane:1.1 # Replace with your Docker image
         ports:
         - containerPort: 8080
         env:

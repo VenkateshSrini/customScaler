@@ -12,11 +12,9 @@ builder.Services.AddMongoRepo(builder.Configuration, "MongoDB", "connectionStrin
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+
 
 app.UseAuthorization();
 
