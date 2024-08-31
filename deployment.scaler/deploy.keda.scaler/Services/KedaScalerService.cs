@@ -43,7 +43,7 @@ namespace deploy.keda.scaler.Services
             MetricValue desiredSizeMetricValue;
             if (deploymentInfo == null)
             {
-                _logger.LogCritical($"Deployment {request.ScaledObjectRef.Name} with namespace {request.ScaledObjectRef.Namespace} not foud in DB");
+                _logger.LogCritical($"ScaledObject {request.ScaledObjectRef.Name} with namespace {request.ScaledObjectRef.Namespace} not foud in DB");
                 isActiveMetricValue = new MetricValue
                 {
                     MetricName = "is_scaling_active",
@@ -64,24 +64,28 @@ namespace deploy.keda.scaler.Services
                     MetricName = "is_scaling_active",
                     MetricValue_ = deploymentInfo?.IsScalingActive == true ? 1 : 0
                 };
-                int? maxScale;
+                int desiredScale; 
                 if (deploymentInfo.IsScalingActive)
                 {
                     var defMaxScale = int.Parse(request.ScaledObjectRef.ScalerMetadata["maxReplicaCount"]);
-                    maxScale = deploymentInfo?.MaxScale >= defMaxScale ? defMaxScale : deploymentInfo?.MaxScale;
+                    desiredScale = Math.Min(deploymentInfo.MaxScale, defMaxScale);
+                    //maxScale = deploymentInfo?.MaxScale >= defMaxScale ? defMaxScale : deploymentInfo?.MaxScale;
+
                 }
                 else
                 {
                     var defMinScale = int.Parse(request.ScaledObjectRef.ScalerMetadata["minReplicaCount"]);
-                    maxScale = deploymentInfo?.MinScale >= defMinScale ? deploymentInfo?.MinScale : defMinScale;
+                    desiredScale = Math.Max(deploymentInfo.MinScale , defMinScale);
+                    //maxScale = deploymentInfo?.MinScale >= defMinScale ? deploymentInfo?.MinScale : defMinScale;
                 }
 
                  desiredSizeMetricValue = new MetricValue
                 {
                     MetricName = "desired_instance_count",
-                    MetricValue_ = maxScale.Value
-                };
+                    MetricValue_ = desiredScale
+                 };
             }
+            _logger.LogInformation($"Returning metrics: {isActiveMetricValue.MetricName}={isActiveMetricValue.MetricValue_}, {desiredSizeMetricValue.MetricName}={desiredSizeMetricValue.MetricValue_}");
             var response = new GetMetricsResponse();
             response.MetricValues.Add(isActiveMetricValue);
             response.MetricValues.Add(desiredSizeMetricValue);

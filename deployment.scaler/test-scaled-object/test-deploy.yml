@@ -54,8 +54,8 @@ spec:
     name: test-scaled-object-deployment # The deployment you want to scale
   minReplicaCount: 0
   maxReplicaCount: 10
-  cooldownPeriod: 30
-  pollingInterval: 30
+  cooldownPeriod: 1
+  pollingInterval: 90
   triggers:
   - type: external
     metadata:
