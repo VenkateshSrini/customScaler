@@ -57,8 +57,17 @@ spec:
   cooldownPeriod: 1
   pollingInterval: 90
   triggers:
-  - type: external
+  - type: metrics-api
     metadata:
-      scalerAddress: keda-scaler.keda-sample.svc.cluster.local:80
-      maxReplicaCount: "10"
-      minReplicaCount: "0"
+      targetValue: "1"
+      format: "json"
+      url: http://scaler-control-plain-service.keda-sample.svc.cluster.local:3007/api/ControlPlane/metrics/keda-sample/test-scaled-object
+      valueLocation: "maxScale"
+
+
+  # - type: external
+  #   metricType: Value
+  #   metadata:
+  #     scalerAddress: keda-scaler.keda-sample.svc.cluster.local:80
+  #     maxReplicaCount: "10"
+  #     minReplicaCount: "0"
